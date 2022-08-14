@@ -17,7 +17,7 @@ export default function SearchBar(props) {
 
     await router.push({
       pathname: "/results",
-      query: {query: query, pageNum: 1, method: method()}
+      query: {q: query, pageNum: 1, method: method()}
     })
     //if(router.pathname === "/results") router.reload();
   }

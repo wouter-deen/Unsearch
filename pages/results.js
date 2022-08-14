@@ -46,7 +46,7 @@ export default function Results() {
   const changeMethod = async (newMethod) => {
     await router.push({
       pathname: "/results",
-      query: {query: query, pageNum: 1, method: newMethod}
+      query: {q: query, pageNum: 1, method: newMethod}
     })
     if(newMethod === "Search") setTabIndex(0);
     if(newMethod === "Images") setTabIndex(1);
@@ -55,9 +55,11 @@ export default function Results() {
 
   useEffect(() => {
     const query = router.query;
-    setMethod(query.method)
-    setPageNum(query.pageNum);
-    setQuery(query.query);
+    if(query.method) {
+      setMethod(query.method)
+    } else setMethod("Search")
+    if(query.pageNum) setPageNum(query.pageNum);
+    setQuery(query.q);
   }, [router.query])
 
   function GoogleSearch(start) {
@@ -86,7 +88,7 @@ export default function Results() {
         GoogleSearch(21)
         GoogleSearch(11)
         GoogleSearch(1)
-      } else if(method === "Search") {
+      } else if(method === "Search" || !method) {
         GoogleSearch(1)
       }
       else {
