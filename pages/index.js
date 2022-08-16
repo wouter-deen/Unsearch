@@ -18,7 +18,7 @@ export default function Home() {
     <div>
       <Head>
         <title>Unsearch</title>
-        <meta name="description" content="Unsearch"/>
+        <meta name="description" content="A private and secure search engine. Free from Unsea."/>
         <link rel="icon" href="/favicon.png"/>
       </Head>
 
