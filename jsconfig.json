@@ -7,7 +7,8 @@
       "@/lib/*": ["lib/*"],
       "@/styles/*": ["styles/*"],
       "@/api/*": ["pages/api/*"],
-      "@/public/*": ["public/*"]
+      "@/public/*": ["public/*"],
+      "@/dependencies/*": ["dependencies/*"]
     }
   }
 }

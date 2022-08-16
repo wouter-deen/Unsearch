@@ -24,8 +24,8 @@ export default function SearchBar(props) {
 
   return (
     <Box as="form" onSubmit={handleSubmit} {...props}>
-      <InputGroup mt={8} maxW="lg" size="lg">
-        <Input placeholder="Search..." onChange={e => setQuery(e.target.value)} defaultValue={props.defaultValue} autoFocus mx={{base: 8, md: 0}}/>
+      <InputGroup mt={4} maxW="lg" size="lg">
+        <Input placeholder="Search..." autoCapitalize="none" onChange={e => setQuery(e.target.value)} defaultValue={props.defaultValue} autoFocus mx={{base: 8, md: 0}}/>
       </InputGroup>
     </Box>
   )

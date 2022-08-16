@@ -1,4 +1,4 @@
-import SearchEngine from "cdrake-se";
+import SearchEngine from "@/dependencies/cdrake-se/index";
 
 export default async function handler(req, res) {
   const {method, query, pageNum, languageISO} = req.body;

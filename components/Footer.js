@@ -61,8 +61,8 @@ const SocialMediaLinks = (props) => (
 
 export default function Footer(props) {
   return (
-    <Flex w="full" pos={props.pos} bottom="0" mt={{base: 8, sm: 16}} bg={useColorModeValue("gray.50", "gray.900")}>
-      <Box as="footer" role="contentinfo" mx="auto" w="full" maxW="container.xl" py="12" align="left" ml={{base: 8, md: 0}}>
+    <Flex w="full" pos={props.pos} bottom="0" mt={{base: 8, sm: 16}} bg={useColorModeValue("gray.50", "gray.900")} justify="center">
+      <Box as="footer" role="contentinfo" w="full" maxW="container.xl" py="12" align="left" ml={{base: 8, md: 0}}>
         <Stack spacing="10" divider={<StackDivider />}>
           <Stack direction={{ base: 'column', lg: 'row' }} spacing={{ base: '10', lg: '28' }}>
             <Box flex="1">

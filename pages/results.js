@@ -21,7 +21,7 @@ import nookies from "nookies";
 import {useRouter} from "next/router";
 import All from "@/components/SearchTabs/All";
 import Images from "@/components/SearchTabs/Images";
-import {FaLock} from "react-icons/fa";
+import {FaExclamationTriangle, FaLock} from "react-icons/fa";
 import News from "@/components/SearchTabs/News";
 
 export default function Results() {
@@ -32,16 +32,18 @@ export default function Results() {
   const [searchResults, setSearchResults] = useState();
   const [imageResults, setImageResults] = useState([]);
   const [newsResults, setNewsResults] = useState([]);
+  const [wikiResults, setWikiResults] = React.useState();
+
   const [query, setQuery] = useState();
   const [pageNum, setPageNum] = useState(1);
   const [method, setMethod] = useState("Search");
-  const [tabIndex, setTabIndex] = React.useState(0)
+  const [tabIndex, setTabIndex] = React.useState(0);
 
   useEffect(() => {
     const query = router.query;
     if(query.method === "Images") setTabIndex(1);
     if(query.method === "News") setTabIndex(2);
-  }, [])
+  }, [router.query])
 
   const changeMethod = async (newMethod) => {
     await router.push({
@@ -64,17 +66,42 @@ export default function Results() {
 
   function GoogleSearch(start) {
     const searchType = method === "Images" ? "&searchType=image" : "";
-    fetch(`https://www.googleapis.com/customsearch/v1?key=${process.env.NEXT_PUBLIC_GOOGLE_SEARCH_API_KEY}&cx=${process.env.NEXT_PUBLIC_GOOGLE_SEARCH_CX}&q=${query}${searchType}&start=${start}`, {
+    fetch(`https://www.googleapis.com/customsearch/v1?key=${process.env.NEXT_PUBLIC_GOOGLE_SEARCH_API_KEY}&cx=${process.env.NEXT_PUBLIC_GOOGLE_SEARCH_CX}&q=${query}${searchType}&start=${start}&lr=lang_${cookies.lang}`, {
       method: "GET"
     }).then((response) => response.json())
       .then(res => {
-        console.log("Google search API response:")
-        console.log(res)
         if(method === "Images") {
           setImageResults(oldArray => [...oldArray, ...res.items]);
         } else setSearchResults(res);
         setLoading(false);
       })
+  }
+
+  function WikiSearch() {
+    fetch(`https://${cookies.lang}.wikipedia.org/w/api.php?origin=*&format=json&action=query&list=search&srlimit=1&srsearch=${query}&srqiprofile=mlr-1024rs`)
+      .then((listResponse) => {
+        return listResponse.json();
+      })
+      .then(function(listResponse) {
+        console.log(listResponse)
+        setWikiResults(null);
+        if(!listResponse.query.search[0]?.title.toLowerCase().includes(query.toLowerCase().substring(0, 4))) return;
+        const searchResults = listResponse.query.search;
+        const pageID = searchResults[0]?.pageid;
+        pageID && fetch(`https://${cookies.lang}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|pageimages|categories|info|pageprops&ppprop=disambiguation&exintro&exsentences=2&explaintext&pithumbsize=500&redirects=1&inprop=url&cllimit=1&origin=*&pageids=${pageID}`)
+          .then((res) => {
+            return res.json();
+          })
+          .then(function(res) {
+            console.log(res)
+            if(res.query?.pages[pageID].categories[0].title.includes("Wikipedia:")) return;
+            const pageid = res.query.pages && Object.keys(res.query.pages)[0];
+            const page = res.query.pages[pageid];
+            setWikiResults(page);
+          })
+          .catch(function(error){console.log(error)});
+      })
+      .catch(function(error){console.log(error);});
   }
 
   useEffect(() => {
@@ -89,11 +116,9 @@ export default function Results() {
         GoogleSearch(11)
         GoogleSearch(1)
       } else if(method === "Search" || !method) {
-        GoogleSearch(1)
-      }
-      else {
-        if(method === "News") setNewsResults(null);
-        if(method === "Shopping") setShoppingResults(null);
+        GoogleSearch(1);
+        WikiSearch();
+      } else if(method === "News") {
         fetch(`${Host()}/api/search`, {
           method: 'POST',
           headers: {
@@ -103,17 +128,16 @@ export default function Results() {
             method: method,
             query: query,
             pageNum: pageNum,
-            languageISO: "en-US"
+            languageISO: cookies.lang
           }),
         }).then((response) => response.json())
           .then(res => {
-            console.log(res)
             if(method === "News") setNewsResults(res);
             setLoading(false);
         }).catch(e => console.log(e));
       }
     }
-  }, [cookies?.searchLanguage, query, method])
+  }, [query, method])
 
   const Anonymized = ({engine}) => (
     <Flex mx={{base: 8, md: 16}} mt={3} align="center">
@@ -133,7 +157,7 @@ export default function Results() {
       <Box align="left" pos="relative" minH="100vh">
         <NavBar/>
         <Box>
-          <SearchBar defaultValue={query} mx={{base: 8, md: 16}}/>
+          <SearchBar defaultValue={query} mx={{base: 0, md: 16}}/>
 
           <Tabs mt={4} isLazy index={tabIndex}>
             <TabList>
@@ -146,7 +170,7 @@ export default function Results() {
               <TabPanel p={0}>
                 <Anonymized engine="Google"/>
                 {loading && <Spinner size="lg" mt={4} ml={{base: 8, md: 16}}/>}
-                <All searchResults={searchResults}/>
+                <All searchResults={searchResults} wikiResults={wikiResults}/>
               </TabPanel>
 
               <TabPanel p={0}>
@@ -157,6 +181,12 @@ export default function Results() {
 
               <TabPanel p={0}>
                 <Anonymized engine="Google and Yahoo"/>
+                {cookies.lang !== ("nl" || "en") &&
+                  <Flex mx={{base: 8, md: 16}} mt={3} align="center">
+                    <Icon as={FaExclamationTriangle} mr={2} color="orange.400"/>
+                    <Text>Your language is currently not yet fully supported for Unsea News.</Text>
+                  </Flex>
+                }
                 {loading && <Spinner size="lg" mt={4} ml={{base: 8, md: 16}}/>}
                 <News newsResults={newsResults}/>
               </TabPanel>

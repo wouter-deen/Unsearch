@@ -34,7 +34,7 @@ export default function Images(props) {
   return (
     <Wrap mt={{base: 4, sm: 8}} ml={{base: 8, md: 16}} spacing={4} spacingY={6}>
       {props.imageResults !== [] && props.imageResults?.map((image, i) => (
-        <Box key={i} rounded="md" align="center" maxW="xs" w="fit-content" border="1px solid" borderColor={borderColor} h="fit-content">
+        <Box key={i} rounded="md" align="center" maxW="xs" w="fit-content" border="1px" borderColor={borderColor} h="fit-content">
           <Box pos="relative" w="full">
             <IconButton aria-label={"open"} icon={<FaExternalLinkAlt/>} pos="absolute" top={1} right={1} size="xs"
               onClick={() => window.open(image.link, "_blank")} bg="blackAlpha.600" backdropFilter="blur(10px)"
@@ -45,7 +45,7 @@ export default function Images(props) {
             >
               {image.image.height}x{image.image.width}</Box>
             <Image src={image.image.thumbnailLink} objectFit="cover" onClick={() => handleOpen(image)} maxH="150px" w="full"
-                   _hover={{cursor: "pointer"}} rounded="md" alt="image"/>
+                   _hover={{cursor: "pointer"}} borderRadius=".375rem .375rem 0 0" alt="image"/>
           </Box>
 
           <Box px={2} py={2}>

@@ -15,3 +15,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+ul {
+  padding: 10px;
+}
