@@ -150,7 +150,7 @@ export default function Results() {
     <div>
       <Head>
         <title>Unsearch</title>
-        <meta name="description" content="Unsearch results"/>
+        <meta name="description" content={`Results for ${query}`}/>
         <link rel="icon" href="/favicon.png"/>
       </Head>
 
