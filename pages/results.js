@@ -39,6 +39,14 @@ export default function Results() {
   const [method, setMethod] = useState("Search");
   const [tabIndex, setTabIndex] = React.useState(0);
 
+  const [langState, setLangState] = useState();
+
+  useEffect(() => {
+    if(!cookies.lang) {
+      setLangState("en");
+    } else setLangState(cookies.lang)
+  }, [cookies.lang])
+
   useEffect(() => {
     const query = router.query;
     if(query.method === "Images") setTabIndex(1);
@@ -66,7 +74,7 @@ export default function Results() {
 
   function GoogleSearch(start) {
     const searchType = method === "Images" ? "&searchType=image" : "";
-    fetch(`https://www.googleapis.com/customsearch/v1?key=${process.env.NEXT_PUBLIC_GOOGLE_SEARCH_API_KEY}&cx=${process.env.NEXT_PUBLIC_GOOGLE_SEARCH_CX}&q=${query}${searchType}&start=${start}&lr=lang_${cookies.lang}`, {
+    fetch(`https://www.googleapis.com/customsearch/v1?key=${process.env.NEXT_PUBLIC_GOOGLE_SEARCH_API_KEY}&cx=${process.env.NEXT_PUBLIC_GOOGLE_SEARCH_CX}&q=${query}${searchType}&start=${start}&lr=lang_${langState}`, {
       method: "GET"
     }).then((response) => response.json())
       .then(res => {
@@ -78,7 +86,7 @@ export default function Results() {
   }
 
   function WikiSearch() {
-    fetch(`https://${cookies.lang}.wikipedia.org/w/api.php?origin=*&format=json&action=query&list=search&srlimit=1&srsearch=${query}&srqiprofile=mlr-1024rs`)
+    fetch(`https://${langState}.wikipedia.org/w/api.php?origin=*&format=json&action=query&list=search&srlimit=1&srsearch=${query}&srqiprofile=mlr-1024rs`)
       .then((listResponse) => {
         return listResponse.json();
       })
@@ -88,7 +96,7 @@ export default function Results() {
         if(!listResponse.query.search[0]?.title.toLowerCase().includes(query.toLowerCase().substring(0, 4))) return;
         const searchResults = listResponse.query.search;
         const pageID = searchResults[0]?.pageid;
-        pageID && fetch(`https://${cookies.lang}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|pageimages|categories|info|pageprops&ppprop=disambiguation&exintro&exsentences=2&explaintext&pithumbsize=500&redirects=1&inprop=url&cllimit=1&origin=*&pageids=${pageID}`)
+        pageID && fetch(`https://${langState}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|pageimages|categories|info|pageprops&ppprop=disambiguation&exintro&exsentences=2&explaintext&pithumbsize=500&redirects=1&inprop=url&cllimit=1&origin=*&pageids=${pageID}`)
           .then((res) => {
             return res.json();
           })
@@ -119,6 +127,7 @@ export default function Results() {
         GoogleSearch(1);
         WikiSearch();
       } else if(method === "News") {
+        console.log("Searching News...")
         fetch(`${Host()}/api/search`, {
           method: 'POST',
           headers: {
@@ -128,10 +137,11 @@ export default function Results() {
             method: method,
             query: query,
             pageNum: pageNum,
-            languageISO: cookies.lang
+            languageISO: langState
           }),
         }).then((response) => response.json())
           .then(res => {
+            console.log(res)
             if(method === "News") setNewsResults(res);
             setLoading(false);
         }).catch(e => console.log(e));
@@ -181,7 +191,7 @@ export default function Results() {
 
               <TabPanel p={0}>
                 <Anonymized engine="Google and Yahoo"/>
-                {cookies.lang !== ("nl" || "en") &&
+                {langState !== "en" && langState !== "nl" &&
                   <Flex mx={{base: 8, md: 16}} mt={3} align="center">
                     <Icon as={FaExclamationTriangle} mr={2} color="orange.400"/>
                     <Text>Your language is currently not yet fully supported for Unsea News.</Text>
