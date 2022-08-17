@@ -103,7 +103,9 @@ export default function Results() {
             .then(function(res) {
               console.log(res)
               if(!res.query.pages[pageID]?.extract.toLowerCase().includes(query.toLowerCase().split(" ")[0])) return;
-              if(res.query?.pages[pageID].categories[0].title.includes("Wikipedia:")) return;
+              const category = res.query?.pages[pageID].categories[0].title;
+              if(category.includes("Wikipedia:")) return;
+              if(category.includes("disambiguation")) return;
               const pageid = res.query.pages && Object.keys(res.query.pages)[0];
               const page = res.query.pages[pageid];
               setWikiResults(page);
@@ -120,7 +122,6 @@ export default function Results() {
 
       if(method === "Images") {
         setImageResults([])
-        GoogleSearch(41)
         GoogleSearch(31)
         GoogleSearch(21)
         GoogleSearch(11)
@@ -152,7 +153,7 @@ export default function Results() {
   }, [query, method])
 
   const Anonymized = ({engine}) => (
-    <Flex mx={{base: 8, md: 16}} mt={3} align="center">
+    <Flex mx={{base: 4, md: 16}} mt={3} align="center">
       <Icon as={FaLock} mr={2} color="#48BB78"/>
       <Text color={useColorModeValue("gray.500", "gray.400")}>Anonymized search results from {engine}</Text>
     </Flex>
@@ -173,7 +174,7 @@ export default function Results() {
 
           <Tabs mt={4} isLazy index={tabIndex}>
             <TabList>
-              <Tab ml={{base: 8, md: 16}} onClick={() => changeMethod("Search")}>All</Tab>
+              <Tab ml={{base: 4, md: 16}} onClick={() => changeMethod("Search")}>All</Tab>
               <Tab onClick={() => changeMethod("Images")}>Images</Tab>
               <Tab onClick={() => changeMethod("News")}>News</Tab>
             </TabList>

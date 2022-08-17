@@ -33,7 +33,7 @@ export default function NavBar() {
     if(!cookies.lang) {
       setLanguage("en");
     } else setLangState(cookies.lang)
-  }, [cookies.lang, setLanguage])
+  }, [cookies.lang])
 
   return (
     <Flex h="72px" align="center" bgColor={useColorModeValue('gray.50', 'gray.900')}
@@ -54,18 +54,18 @@ export default function NavBar() {
               mr={4}
             />
             <MenuList>
-              <MenuOptionGroup value={langState} title="Search language">
-                <MenuItemOption command='EN' onClick={() => setLanguage("en")} value="en">
-                  English
+              <MenuOptionGroup value={langState} title="Search language" type="radio">
+                <MenuItemOption onClick={() => setLanguage("en")} value="en">
+                  🇺🇸 English
                 </MenuItemOption>
-                <MenuItemOption command='NL' onClick={() => setLanguage("nl")} value="nl">
-                  Nederlands
+                <MenuItemOption onClick={() => setLanguage("nl")} value="nl">
+                  🇳🇱 Nederlands
                 </MenuItemOption>
-                <MenuItemOption command='DE' onClick={() => setLanguage("de")} value="de">
-                  German
+                <MenuItemOption onClick={() => setLanguage("de")} value="de">
+                  🇩🇪 Deutsch
                 </MenuItemOption>
-                <MenuItemOption command='ES' onClick={() => setLanguage("es")} value="es">
-                  Spanish
+                <MenuItemOption onClick={() => setLanguage("es")} value="es">
+                  🇪🇸 Español
                 </MenuItemOption>
               </MenuOptionGroup>
             </MenuList>

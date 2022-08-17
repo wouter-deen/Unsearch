@@ -1,6 +1,7 @@
-import {Box, Input, InputGroup} from "@chakra-ui/react";
+import {Box, IconButton, Input, InputGroup, InputRightElement} from "@chakra-ui/react";
 import {useState} from "react";
 import {useRouter} from "next/router";
+import {FaSearch} from "react-icons/fa";
 
 export default function SearchBar(props) {
   const [query, setQuery] = useState("");
@@ -19,13 +20,21 @@ export default function SearchBar(props) {
       pathname: "/results",
       query: {q: query, pageNum: 1, method: method()}
     })
-    //if(router.pathname === "/results") router.reload();
+
+    //remove focus from search bar when submitting
+    if (document.activeElement instanceof HTMLElement)
+      document.activeElement.blur();
   }
 
   return (
-    <Box as="form" onSubmit={handleSubmit} {...props}>
+    <Box as="form" onSubmit={handleSubmit} {...props} px={{base: 4, md: 0}}>
       <InputGroup mt={4} maxW="lg" size="lg">
-        <Input placeholder="Search..." autoCapitalize="none" onChange={e => setQuery(e.target.value)} defaultValue={props.defaultValue} autoFocus mx={{base: 8, md: 0}}/>
+        <InputRightElement>
+          <IconButton icon={<FaSearch/>} variant="ghost" onClick={handleSubmit} aria-label="submit"/>
+        </InputRightElement>
+        <Input placeholder="Search..." autoCapitalize="none" onChange={e => setQuery(e.target.value)}
+               defaultValue={props.defaultValue} autoFocus
+        />
       </InputGroup>
     </Box>
   )
