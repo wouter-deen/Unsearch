@@ -30,11 +30,11 @@ export default function All(props) {
       <VStack align="left" maxW="container.sm" ml={{base: 4, md: 16}} mr={{base: 4, md: 16}} spacing={4}>
         {props.searchResults?.items?.map((page, i) => (
           <Box key={i} rounded="md" border="1px" borderColor={borderColor} w="full" px={2} py={1} pos="relative">
-            <Link href={page.link} target="_blank" fontSize="sm" color="gray.500">
+            <Link href={page.link} fontSize="sm" color="gray.500">
               {page.link}
             </Link>
 
-            <Link href={page.link} target="_blank" color="blue.400" fontWeight={600} fontSize="xl" display="block"
+            <Link href={page.link} color="blue.400" fontWeight={600} fontSize="xl" display="block"
             >
               {page.title}
             </Link>
@@ -69,7 +69,7 @@ export default function All(props) {
             </Flex>
             <Button onClick={() => window.location.href = props.wikiResults?.fullurl}
                     colorScheme="blue">
-              Open in Wiki
+              Open in Wikipedia
             </Button>
           </Flex>
         </Box>

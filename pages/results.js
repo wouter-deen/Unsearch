@@ -93,21 +93,23 @@ export default function Results() {
       .then(function(listResponse) {
         console.log(listResponse)
         setWikiResults(null);
-        if(!listResponse.query.search[0]?.title.toLowerCase().includes(query.toLowerCase().substring(0, 4))) return;
         const searchResults = listResponse.query.search;
         const pageID = searchResults[0]?.pageid;
-        pageID && fetch(`https://${langState}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|pageimages|categories|info|pageprops&ppprop=disambiguation&exintro&exsentences=2&explaintext&pithumbsize=500&redirects=1&inprop=url&cllimit=1&origin=*&pageids=${pageID}`)
-          .then((res) => {
-            return res.json();
-          })
-          .then(function(res) {
-            console.log(res)
-            if(res.query?.pages[pageID].categories[0].title.includes("Wikipedia:")) return;
-            const pageid = res.query.pages && Object.keys(res.query.pages)[0];
-            const page = res.query.pages[pageid];
-            setWikiResults(page);
-          })
-          .catch(function(error){console.log(error)});
+        if(pageID) {
+          fetch(`https://${langState}.wikipedia.org/w/api.php?format=json&action=query&prop=extracts|pageimages|categories|info|pageprops&ppprop=disambiguation&exintro&exsentences=3&explaintext&pithumbsize=500&redirects=1&inprop=url&cllimit=1&origin=*&pageids=${pageID}`)
+            .then((res) => {
+              return res.json();
+            })
+            .then(function(res) {
+              console.log(res)
+              if(!res.query.pages[pageID]?.extract.toLowerCase().includes(query.toLowerCase().split(" ")[0])) return;
+              if(res.query?.pages[pageID].categories[0].title.includes("Wikipedia:")) return;
+              const pageid = res.query.pages && Object.keys(res.query.pages)[0];
+              const page = res.query.pages[pageid];
+              setWikiResults(page);
+            })
+            .catch(function(error){console.log(error)});
+        }
       })
       .catch(function(error){console.log(error);});
   }

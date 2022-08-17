@@ -1,4 +1,4 @@
-import {Box, Flex, Icon, Text, useBreakpointValue, useColorModeValue, VStack} from "@chakra-ui/react";
+import {Box, Flex, Icon, Link, Text, useBreakpointValue, useColorModeValue, VStack} from "@chakra-ui/react";
 import {FaClock} from "react-icons/fa";
 
 export default function News(props) {
@@ -37,14 +37,9 @@ export default function News(props) {
 
           </Flex>
 
-          <Text onClick={() => window.open(page.Link, "_blank")}
-                color="blue.400"
-                fontWeight={600}
-                fontSize="xl"
-                _hover={{cursor: "pointer", textDecoration: "underline"}}
-          >
+          <Link href={page.Link} color="blue.400" fontWeight={600} fontSize="xl">
             {page.Title}
-          </Text>
+          </Link>
           <Text>{page.Description}</Text>
         </Box>
       ))}
