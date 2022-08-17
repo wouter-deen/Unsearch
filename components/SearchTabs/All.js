@@ -48,9 +48,11 @@ export default function All(props) {
         <Box border="1px" borderColor={borderColor} rounded="lg" h="fit-content" pos="relative"
              mx={{base: 4, md: 0}} maxW="md" minW={{base: "", md: "md"}}
         >
-          <Image src={props.wikiResults?.thumbnail?.source} borderRadius="0.5rem 0.5rem 0 0" w="full" maxH="250px"
-                 objectFit="cover" bg="gray.50" alt="img"
-          />
+          {props.wikiResults?.thumbnail?.source &&
+            <Image src={props.wikiResults?.thumbnail?.source} borderRadius="0.5rem 0.5rem 0 0" w="full" maxH="250px"
+                   objectFit="cover" bg="gray.50" alt="wikipedia header image"
+            />
+          }
           <Box w="full" px={4} py={2} borderBottom="1px" borderColor={borderColor} bg={wikiResultsHeadingBg} borderRadius={!props.wikiResults?.thumbnail && "0.5rem 0.5rem 0 0"}>
             <Flex align="center">
               <Icon as={FaWikipediaW} boxSize={9} mr={3} bg={wikiLogoBg} p={1} rounded="lg" boxShadow="md"/>
